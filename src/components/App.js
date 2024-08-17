@@ -1,40 +1,24 @@
-import React, { useState } from "react";
-import Question from "./Question";
-import quiz from "../data/quiz";
+import React, { useState } from 'react';
+import Question from './Question'; // Import the Question component
 
 function App() {
-  const [questions, setQuestions] = useState(quiz);
-  const [currentQuestionId, setCurrentQuestion] = useState(1);
   const [score, setScore] = useState(0);
-  const currentQuestion = questions.find((q) => q.id === currentQuestionId);
 
-  function handleQuestionAnswered(correct) {
-    if (currentQuestionId < questions.length) {
-      setCurrentQuestion((currentQuestionId) => currentQuestionId + 1);
-    } else {
-      setCurrentQuestion(null);
+  // Function to handle when a question is answered
+  const handleAnswered = (wasCorrect) => {
+    if (wasCorrect) {
+      setScore(score + 1);
     }
-    if (correct) {
-      setScore((score) => score + 1);
-    }
-  }
+    // You can also add logic to load the next question or handle the end of the quiz here
+  };
 
   return (
-    <main>
-      <section>
-        {currentQuestion ? (
-          <Question
-            question={currentQuestion}
-            onAnswered={handleQuestionAnswered}
-          />
-        ) : (
-          <>
-            <h1>Game Over</h1>
-            <h2>Total Correct: {score}</h2>
-          </>
-        )}
-      </section>
-    </main>
+    <div className="App">
+      <h1>Trivia App</h1>
+      <h2>Score: {score}</h2>
+      {/* Render the Question component and pass the handleAnswered function as a prop */}
+      <Question onAnswered={handleAnswered} />
+    </div>
   );
 }
 

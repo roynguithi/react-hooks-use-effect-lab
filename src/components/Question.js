@@ -1,31 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 
-function Question({ question, onAnswered }) {
+function Question({ onAnswered }) {
+  // State to track the remaining time
   const [timeRemaining, setTimeRemaining] = useState(10);
 
-  // add useEffect code
+  useEffect(() => {
+    // Set up the timeout function to decrease timeRemaining by 1 every second
+    const timerId = setTimeout(() => {
+      setTimeRemaining((prevTime) => prevTime - 1);
+    }, 1000);
 
-  function handleAnswer(isCorrect) {
-    setTimeRemaining(10);
-    onAnswered(isCorrect);
-  }
+    // Cleanup function to clear the timeout when the component unmounts
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [timeRemaining]); // Dependency array
 
-  const { id, prompt, answers, correctIndex } = question;
+  // Check if timeRemaining hits 0
+  useEffect(() => {
+    if (timeRemaining === 0) {
+      setTimeRemaining(10); // Reset timer to 10 seconds
+      onAnswered(false); // Trigger the callback with false
+    }
+  }, [timeRemaining, onAnswered]);
 
   return (
-    <>
-      <h1>Question {id}</h1>
-      <h3>{prompt}</h3>
-      {answers.map((answer, index) => {
-        const isCorrect = index === correctIndex;
-        return (
-          <button key={answer} onClick={() => handleAnswer(isCorrect)}>
-            {answer}
-          </button>
-        );
-      })}
-      <h5>{timeRemaining} seconds remaining</h5>
-    </>
+    <div>
+      <h2>Time Remaining: {timeRemaining} seconds</h2>
+      {/* Render the question and possible answers here */}
+    </div>
   );
 }
 
